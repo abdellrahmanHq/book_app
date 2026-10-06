@@ -3,8 +3,27 @@ class BooksController < ApplicationController
     before_action :set_book, only: [:edit, :update, :destroy]
     before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
+    
     def index
-        @books=Book.includes(:author).all
+
+        @filterrific = initialize_filterrific(
+        Book,
+        params[:filterrific],
+        select_options: {
+            with_author_id: Author.options_for_select
+        }
+        ) or return
+        @books = @filterrific.find.page(params[:page])
+        
+
+
+        respond_to do |format|
+        format.html
+        format.csv{send_data @books.to_csv, filename: "books-#{Date.today}.csv"}
+        end
+
+
+
     end
 
     def new

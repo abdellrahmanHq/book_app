@@ -7,4 +7,8 @@ class Author < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :name, presence: true, uniqueness: true
+
+  def self.options_for_select
+    order(:name).map{|author| [author.name, author.id]}
+  end
 end

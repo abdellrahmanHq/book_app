@@ -1,0 +1,16 @@
+<%# app/views/books/_list.html.erb %>
+
+<p>Found <%= books.total_count %> books</p>
+
+<ul>
+  <% books.each do |book| %>
+    <li>
+      <strong><%= link_to book.name, edit_book_path(book) %></strong><br>
+      Released: <%= book.release_date %><br>
+      Author: <%= book.author.name %>
+    </li>
+  <% end %>
+</ul>
+
+<%# Kaminari Pagination Links %>
+<%= paginate books %>

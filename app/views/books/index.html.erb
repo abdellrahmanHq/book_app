@@ -1,0 +1,33 @@
+<h1>Books</h1>
+
+<%= form_for_filterrific @filterrific do |f| %>
+  <div class="filter-group">
+    <label>Search name:</label>
+    <%= f.text_field :search_query, class: 'filterrific-periodically-observed' %>
+  </div>
+
+  <div class="filter-group">
+    <label>Author:</label>
+    <%= f.select :with_author_id, 
+                 @filterrific.select_options[:with_author_id], 
+                 { include_blank: '- Any Author -' } %>
+  </div>
+
+  <div class="filter-group">
+    <label>Sort by:</label>
+    <%= f.select :sorted_by, 
+                 [['Newest First', 'created_at_desc'], ['Oldest First', 'created_at_asc']], 
+                 {} %>
+  </div>
+
+  <div class="filter-group">
+    <%= link_to 'Reset filters', reset_filterrific_url, class: 'btn btn-secondary' %>
+    <%= link_to "Download CSV", books_path(format: :csv, filterrific: @filterrific.to_hash), class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<%# 2. The Results Container %>
+<%# Filterrific looks for a div with id="filterrific_results" to update via AJAX %>
+<div id="filterrific_results">
+  <%= render(partial: 'books/list', locals: { books: @books }) %>
+</div>
