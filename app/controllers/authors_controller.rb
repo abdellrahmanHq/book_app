@@ -1,6 +1,11 @@
 class AuthorsController < ApplicationController
-  before_action :authenticate_author!
   def index
-    @pagy,@authors=pagy(Author.order(:name))
+    @filterrific = initialize_filterrific(
+      Author,
+      params[:filterrific],
+      select_options: {}
+    ) or return
+
+    @pagy, @authors = pagy(@filterrific.find.order(:name))
   end
 end

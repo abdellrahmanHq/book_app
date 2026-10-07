@@ -1,6 +1,6 @@
 class BooksController < ApplicationController
   before_action :authenticate_author!
-  before_action :set_book, only: [:edit, :update, :destroy]
+  before_action :set_book, only: [:show,:edit, :update, :destroy]
   before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
   def index
@@ -35,6 +35,9 @@ class BooksController < ApplicationController
   end
 
   def edit
+  end
+
+  def show
   end
 
   def update

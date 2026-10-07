@@ -2,8 +2,8 @@ require 'csv'
 
 class Book < ApplicationRecord
   belongs_to :author
-  validates :name, presence: true, uniqueness: { case_sensitive: false, message: "already exists in the library" }
 
+  validates :name, presence: true, uniqueness: { case_sensitive: false, message: "already exists in the library" }
   validate :release_date_cannot_be_in_the_future
 
   filterrific(
@@ -17,7 +17,7 @@ class Book < ApplicationRecord
 
   scope :search_query, ->(query) {
     return nil if query.blank?
-    where("LOWER(name) LIKE ?", "%#{query.downcase}%")
+    where("LOWER(name) LIKE ?", "%#{query.to_s.downcase}%")
   }
 
   scope :with_author_id, ->(author_id) {
@@ -37,12 +37,12 @@ class Book < ApplicationRecord
     end
   }
 
-  def self.to_csv
-    attributes = %w[id name release_date author_id created_at]
+def self.to_csv
+    headers = ['Book Name', 'Release Date', 'Author Name']
     CSV.generate(headers: true) do |csv|
-      csv << attributes
+      csv << headers
       all.each do |book|
-        csv << attributes.map { |attr| book.send(attr) }
+        csv << [book.name, book.release_date, book.author.name]
       end
     end
   end
