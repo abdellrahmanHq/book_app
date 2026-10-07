@@ -1,66 +1,57 @@
+require 'csv'
+
 class Book < ApplicationRecord
   belongs_to :author
-  
-  validates :name, presence: true, uniqueness: true
-  validates :release_date, presence: true
-  validate :cannot_be_future
+  validates :name, presence: true, uniqueness: { case_sensitive: false, message: "already exists in the library" }
 
+  validate :release_date_cannot_be_in_the_future
 
   filterrific(
-        default_filter_params: {sorted_by: "created_at_desc"},
-        available_filters: [
-            :search_query,
-            :with_release_date,
-            :with_author_id,
-            :sorted_by
-        ]
-    )
+    default_filter_params: { sorted_by: 'release_date_desc' },
+    available_filters: [
+      :search_query,
+      :with_author_id,
+      :sorted_by
+    ]
+  )
 
-    scope :sorted_by, ->(sort_option) {
-    # Extract the sort direction from the param string.
-    direction = sort_option =~ /desc$/ ? 'desc' : 'asc'
-    
-    case sort_option.to_s
-    when /^created_at_/
-      order("books.created_at #{direction}")
-    when /^name_/ # Example: if you want to sort by book name
-      order("books.name #{direction}")
+  scope :search_query, ->(query) {
+    return nil if query.blank?
+    where("LOWER(name) LIKE ?", "%#{query.downcase}%")
+  }
+
+  scope :with_author_id, ->(author_id) {
+    where(author_id: author_id)
+  }
+
+  scope :sorted_by, ->(sort_key) {
+    case sort_key.to_s
+    when 'release_date_desc'
+      order(release_date: :desc)
+    when 'release_date_asc'
+      order(release_date: :asc)
+    when 'created_at_desc'
+      order(created_at: :desc)
     else
-      raise(ArgumentError, "Invalid sort option: #{sort_option.inspect}")
+      order(release_date: :desc)
     end
   }
 
-    scope :search_query, ->(query) {
-        where("name ILIKE ?","%#{query}%")
-    }
-
-    scope :with_release_date, ->(date) {
-        where(release_date: date)
-    }
-
-    scope :with_author_id, -> (author_id){
-        where(author_id: author_id)
-    }
-
-
-
-    require 'csv'
-    def self.to_csv
-      attributes = %w[book_name release_date author_name] 
-      CSV.generate(headers: true) do |csv|
-        csv << attributes
-        all.each do |book|
-          csv << [book.name, book.release_date, book.author.name]
-        end
+  def self.to_csv
+    attributes = %w[id name release_date author_id created_at]
+    CSV.generate(headers: true) do |csv|
+      csv << attributes
+      all.each do |book|
+        csv << attributes.map { |attr| book.send(attr) }
       end
     end
-
-
+  end
 
   private
-  def cannot_be_future
+
+  def release_date_cannot_be_in_the_future
     if release_date.present? && release_date > Date.today
-      error.add(:release_date,"cannote be in the futuer")
+      errors.add(:release_date, "can't be in the future")
     end
   end
 end

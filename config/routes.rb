@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "authors/index"
   devise_for :authors
   resources :books
   resources :authors, only:[:index]

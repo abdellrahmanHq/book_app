@@ -1,0 +1,20 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0 mt-4">
+      <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+        <h2 class="fw-bold">Edit Book</h2>
+      </div>
+      <div class="card-body p-4">
+        <%= render 'form', book: @book %>
+        
+        <hr class="mt-4 mb-3">
+        
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <%= link_to '← Back to Library', books_path, class: "text-decoration-none text-muted" %>
+          
+          <%= link_to 'Delete Book', book_path(@book), data: { turbo_method: :delete, turbo_confirm: 'Are you sure you want to permanently delete this book?' }, class: "btn btn-sm btn-outline-danger" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<%= form_with(model: book, local: true, class: "needs-validation") do |form| %>
+  <% if book.errors.any? %>
+    <div class="alert alert-danger shadow-sm">
+      <h6 class="alert-heading fw-bold"><%= pluralize(book.errors.count, "error") %> prohibited this book from being saved:</h6>
+      <ul class="mb-0">
+        <% book.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :name, class: "form-label fw-semibold" %>
+    <%= form.text_field :name, class: "form-control", placeholder: "e.g. A Game of Thrones" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :release_date, "Release Date", class: "form-label fw-semibold" %>
+    <%= form.date_field :release_date, class: "form-control", max: Date.today %>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= form.submit "Save Book", class: "btn btn-primary w-100 shadow-sm" %>
+  </div>
+<% end %>

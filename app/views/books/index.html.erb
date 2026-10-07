@@ -1,33 +1,43 @@
-<h1>Books</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="display-5 fw-bold">Book Library</h1>
+  <%= link_to '+ New Book', new_book_path, class: "btn btn-primary shadow-sm" %>
+</div>
 
-<%= form_for_filterrific @filterrific do |f| %>
-  <div class="filter-group">
-    <label>Search name:</label>
-    <%= f.text_field :search_query, class: 'filterrific-periodically-observed' %>
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body bg-white rounded">
+    <%= form_for_filterrific @filterrific, html: { class: "row g-3 align-items-end" } do |f| %>
+      
+      <div class="col-md-3">
+        <label class="form-label text-muted fw-semibold small text-uppercase">Search title</label>
+        <div class="input-group">
+          <%= f.text_field :search_query, class: 'form-control border-end-0 filterrific-periodically-observed', placeholder: "Type a book name..." %>
+          <button type="submit" class="btn bg-white border border-start-0" style="border-color: #dee2e6;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search text-muted" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label text-muted fw-semibold small text-uppercase">Author</label>
+        <%= f.select :with_author_id, @filterrific.select_options[:with_author_id], { include_blank: '- Any Author -' }, class: "form-select" %>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label text-muted fw-semibold small text-uppercase">Sort by</label>
+        <%= f.select :sorted_by, [['Newest Release', 'release_date_desc'], ['Oldest Release', 'release_date_asc']], {}, class: "form-select" %>
+      </div>
+
+      <div class="col-md-3 d-flex gap-2">
+        <%= link_to 'Reset', reset_filterrific_url, class: 'btn btn-outline-secondary w-50' %>
+        <%= link_to "CSV", books_path(format: :csv, filterrific: @filterrific.to_hash), class: "btn btn-success w-50" %>
+      </div>
+      
+    <% end %>
   </div>
+</div>
 
-  <div class="filter-group">
-    <label>Author:</label>
-    <%= f.select :with_author_id, 
-                 @filterrific.select_options[:with_author_id], 
-                 { include_blank: '- Any Author -' } %>
-  </div>
-
-  <div class="filter-group">
-    <label>Sort by:</label>
-    <%= f.select :sorted_by, 
-                 [['Newest First', 'created_at_desc'], ['Oldest First', 'created_at_asc']], 
-                 {} %>
-  </div>
-
-  <div class="filter-group">
-    <%= link_to 'Reset filters', reset_filterrific_url, class: 'btn btn-secondary' %>
-    <%= link_to "Download CSV", books_path(format: :csv, filterrific: @filterrific.to_hash), class: "btn btn-primary" %>
-  </div>
-<% end %>
-
-<%# 2. The Results Container %>
-<%# Filterrific looks for a div with id="filterrific_results" to update via AJAX %>
 <div id="filterrific_results">
   <%= render(partial: 'books/list', locals: { books: @books }) %>
 </div>

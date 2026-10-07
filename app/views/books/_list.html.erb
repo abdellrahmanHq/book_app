@@ -1,16 +1,30 @@
-<%# app/views/books/_list.html.erb %>
+<p class="text-muted fw-semibold">Found <%= @pagy.count %> books</p>
 
-<p>Found <%= books.total_count %> books</p>
-
-<ul>
-  <% books.each do |book| %>
-    <li>
-      <strong><%= link_to book.name, edit_book_path(book) %></strong><br>
-      Released: <%= book.release_date %><br>
-      Author: <%= book.author.name %>
-    </li>
-  <% end %>
-</ul>
-
-<%# Kaminari Pagination Links %>
-<%= paginate books %>
+<div class="table-responsive shadow-sm rounded bg-white">
+  <table class="table table-hover table-borderless mb-0 align-middle">
+    <thead class="table-light border-bottom">
+      <tr>
+        <th class="py-3 px-4">Title</th>
+        <th class="py-3 px-4">Author</th>
+        <th class="py-3 px-4">Release Date</th>
+        <th class="py-3 px-4 text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% books.each do |book| %>
+        <tr class="border-bottom">
+          <td class="fw-bold px-4 py-3 text-dark"><%= book.name %></td>
+          <td class="px-4 py-3 text-muted"><%= book.author.name %></td>
+          <td class="px-4 py-3 text-muted"><%= book.release_date %></td>
+          <td class="px-4 py-3 text-end">
+            <%= link_to 'Edit', edit_book_path(book), class: "btn btn-sm btn-outline-primary" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<div class="mt-4 d-flex justify-content-center">
+  <%== @pagy.series_nav(:bootstrap) %>
+</div>
+</div>
