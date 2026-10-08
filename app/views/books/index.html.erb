@@ -5,31 +5,34 @@
 
 <div class="card shadow-sm border-0 mb-4">
   <div class="card-body bg-white rounded">
-    <%= form_for_filterrific @filterrific, html: { data: { turbo_frame: "results" }, class: "row g-3 align-items-end" } do |f| %>
+    <%= form_for_filterrific @filterrific, html: { data: { controller: "autosubmit", turbo_frame: "results" }, class: "row g-3 align-items-end" } do |f| %>
       
       <div class="col-md-3">
-        <label class="form-label text-muted fw-semibold small text-uppercase">Search title</label>
-        <div class="input-group">
-          <%= f.text_field :search_query, class: 'form-control border-end-0', placeholder: "Type a book name...", oninput: "clearTimeout(window.timer); window.timer = setTimeout(() => { this.form.requestSubmit() }, 400);" %>
-          <button type="submit" class="btn bg-white border border-start-0" style="border-color: #dee2e6;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search text-muted" viewBox="0 0 16 16">
-              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-            </svg>
-          </button>
-        </div>
+        <label class="form-label text-muted fw-semibold small text-uppercase">Search Book or Author</label>
+        <%= f.text_field :search_query, class: 'form-control', placeholder: "Type a name...", data: { action: "input->autosubmit#search" } %>
       </div>
 
       <div class="col-md-3">
-        <label class="form-label text-muted fw-semibold small text-uppercase">Author</label>
-        <%= f.select :with_author_id, @filterrific.select_options[:with_author_id], { include_blank: '- Any Author -' }, class: "form-select", onchange: "this.form.requestSubmit();" %>
+        <label class="form-label text-muted fw-semibold small text-uppercase">Select Author</label>
+        <%= f.select :with_author_id, @filterrific.select_options[:with_author_id], { include_blank: '- Any -' }, class: "form-select", data: { action: "change->autosubmit#submit" } %>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-md-2">
+        <label class="form-label text-muted fw-semibold small text-uppercase">Release Date</label>
+        <%= f.date_field :with_release_date, class: 'form-control', data: { action: "change->autosubmit#submit" } %>
+      </div>
+
+      <div class="col-md-2">
         <label class="form-label text-muted fw-semibold small text-uppercase">Sort by</label>
-        <%= f.select :sorted_by, [['Newest Release', 'release_date_desc'], ['Oldest Release', 'release_date_asc']], {}, class: "form-select", onchange: "this.form.requestSubmit();" %>
+        <%= f.select :sorted_by, [
+          ['Newest Added', 'created_at_desc'], 
+          ['Oldest Added', 'created_at_asc'],
+          ['Newest Release', 'release_date_desc'], 
+          ['Oldest Release', 'release_date_asc']
+        ], {}, class: "form-select", data: { action: "change->autosubmit#submit" } %>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-md-2">
         <%= link_to 'Reset Filters', reset_filterrific_url, class: 'btn btn-outline-secondary w-100', data: { turbo_frame: "_top" } %>
       </div>
       

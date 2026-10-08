@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "BooksControllers", type: :request do
-  let(:george) { create(:author) }
-  let(:stephen) { create(:author) }
-  let!(:book) { create(:book, author: george) }
+  let(:abd) { create(:author) }
+  let(:qusai) { create(:author) }
+  let!(:book) { create(:book, author: abd) }
 
   describe "GET /books" do
     it "redirects to login when logged out" do
@@ -12,13 +12,13 @@ RSpec.describe "BooksControllers", type: :request do
     end
 
     it "succeeds when logged in" do
-      sign_in george
+      sign_in abd
       get books_path
       expect(response).to have_http_status(:success)
     end
 
     it "downloads CSV format successfully" do
-      sign_in george
+      sign_in abd
       get books_path(format: :csv)
       
       expect(response).to have_http_status(:success)
@@ -28,20 +28,20 @@ RSpec.describe "BooksControllers", type: :request do
 
   describe "POST /books" do
     it "creates a book assigned to the logged-in author" do
-      sign_in george
+      sign_in abd
       
       expect {
-        post books_path, params: { book: { name: "A Storm of Swords", release_date: "2000-08-08" } }
+        post books_path, params: { book: { name: "testbook", release_date: "2000-08-08" } }
       }.to change(Book, :count).by(1)
       
-      expect(Book.last.author).to eq(george)
+      expect(Book.last.author).to eq(abd)
       expect(response).to redirect_to(books_path)
     end
   end
 
   describe "DELETE /books/:id" do
     it "allows the owner to delete their book" do
-      sign_in george
+      sign_in abd
       
       expect {
         delete book_path(book)
@@ -49,7 +49,7 @@ RSpec.describe "BooksControllers", type: :request do
     end
 
     it "prevents an author from deleting someone else's book" do
-      sign_in stephen # Logged in as Stephen, trying to delete George's book
+      sign_in qusai
       
       expect {
         delete book_path(book)

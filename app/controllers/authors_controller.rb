@@ -1,4 +1,5 @@
 class AuthorsController < ApplicationController
+  before_action :authenticate_author!
   def index
     @filterrific = initialize_filterrific(
       Author,

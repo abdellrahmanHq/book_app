@@ -22,3 +22,22 @@ A Ruby on Rails web application where authors can manage their books. Built as p
    ```bash
    git clone <https://github.com/abdellrahmanHq/book_app>
    cd book_app
+
+
+2. **Install dependencies**
+   ```bash
+   bundle install
+
+3. **Create the database**
+   ```bash
+   rails db:create
+
+
+
+4. **Start the Rails server**
+   ```bash
+   srails s
+
+5. **Open the application**
+Visit:
+http://localhost:3000

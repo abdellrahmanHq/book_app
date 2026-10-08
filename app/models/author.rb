@@ -12,7 +12,7 @@ class Author < ApplicationRecord
   )
 
   scope :search_query, ->(query) {
-    return nil if query.blank?
+    return all if query.blank?
     where("LOWER(name) LIKE ?", "%#{query.to_s.downcase}%")
   }
 
